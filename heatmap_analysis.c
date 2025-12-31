@@ -148,5 +148,14 @@ int main(int argc, char* argv[]) {
     double end = omp_get_wtime();
     printf("Execution took: %f s\n", end - start);
 
+    
+    for (int i = 0; i < rows; ++i) {
+        free(A[i]);
+    }
+    free(A);
+
+    free(maximums);
+    free(row_hotspots);
+
     return 0;
 }
