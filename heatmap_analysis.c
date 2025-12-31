@@ -55,9 +55,12 @@ int main(int argc, char* argv[]) {
     printf("Starting heatmap_analysis\n");
     printf("Parameters: columns: %d, rows: %d, seed: %lu, lower: %lu, upper: %lu, window height: %d, verbose: %d, num threads: %d, work factor: %d\n", columns, rows, seed, lower, upper, window_height, verbose, num_threads, work_factor);
 
-    unsigned long A[rows][columns];
-    unsigned long maximums[columns];
-    unsigned long row_hotspots[rows];
+    unsigned long **A = malloc(rows * sizeof(unsigned long *));
+    for (int i = 0; i < rows; ++i)
+        A[i] = malloc(columns * sizeof(unsigned long));
+
+    unsigned long * maximums = malloc(columns * sizeof(unsigned long *));
+    unsigned long * row_hotspots = malloc(rows * sizeof(unsigned long *));
     
     // Initialize arrays to zero
     for (int i = 0; i < columns; ++i) maximums[i] = 0;
@@ -91,19 +94,18 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    unsigned long total_hotspots = 0;
     for (int j = 0; j < columns; ++j) {
         unsigned long maximum = 0;
         unsigned long sum = 0;
         for (int i = 0; i < rows; ++i) {
             // Find maximum sliding sum
-            if (verbose) {
-                sum += A[i][j];                   
-                if (i >= window_height) {         
-                    sum -= A[i - window_height][j];
-                }
-                if (i >= window_height - 1) {
-                    if (sum > maximum) maximum = sum;
-                }
+            sum += A[i][j];                   
+            if (i >= window_height) {         
+                sum -= A[i - window_height][j];
+            }
+            if (i >= window_height - 1) {
+                if (sum > maximum) maximum = sum;
             }
             // Find hotspots
             bool is_hotspot = true;
@@ -115,12 +117,12 @@ int main(int argc, char* argv[]) {
     
             if (is_hotspot) {
                 row_hotspots[i]++;
+                total_hotspots++;
             }
 
         }
-        if (verbose) {
-            maximums[j] = maximum;
-        }
+        maximums[j] = maximum;
+        
     }
 
     // Print maximum sliding sums per column
@@ -136,15 +138,11 @@ int main(int argc, char* argv[]) {
     // Count and print hotspots 
     if (verbose) {
         printf("Hotspots per row:\n");
-    }
-
-    unsigned long total_hotspots = 0;
-    for (int i = 0; i < rows; ++i) {
-        total_hotspots += row_hotspots[i];
-        if (verbose) {
+        for (int i = 0; i < rows; ++i) {
             printf("Row %d: %lu hotspot(s)\n", i, row_hotspots[i]);
         }
     }
+ 
     printf("Total hotspots found: %lu\n", total_hotspots);
 
     double end = omp_get_wtime();
