@@ -62,8 +62,8 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < rows; ++i)
         A[i] = malloc(columns * sizeof(unsigned long));
 
-    unsigned long * maximums = malloc(columns * sizeof(unsigned long *));
-    unsigned long * row_hotspots = malloc(rows * sizeof(unsigned long *));
+    unsigned long * maximums = malloc(columns * sizeof(unsigned long));
+    unsigned long * row_hotspots = malloc(rows * sizeof(unsigned long));
     // Initialize arrays to zero
     #pragma omp parallel for
     for (int i = 0; i < columns; ++i) maximums[i] = 0;
@@ -104,22 +104,13 @@ int main(int argc, char* argv[]) {
     double hash_end_time = omp_get_wtime();
     printf("Time taken for hash function: %f s\n", hash_end_time - hash_start_time);
     double start_time = omp_get_wtime();
+    
     unsigned long total_hotspots = 0;
-    #pragma omp parallel for reduction(+:total_hotspots)
-    for (int j = 0; j < columns; ++j) {
-        unsigned long maximum = 0;
-        unsigned long sum = 0;
-        #pragma omp parallel for reduction(+:sum)
-        for (int i = 0; i < rows; ++i) {
-            // Find maximum sliding sum
-            sum += A[i][j];                   
-            if (i >= window_height) {         
-                sum -= A[i - window_height][j];
-            }
-            if (i >= window_height - 1) {
-                if (sum > maximum) maximum = sum;
-            }
-            // Find hotspots
+    
+    // Hotspot analysis
+    for (int i = 0; i < rows; ++i) {
+        #pragma omp parallel for reduction(+:total_hotspots)
+        for (int j = 0; j < columns; ++j) {
             bool is_hotspot = true;
     
             if (i > 0 && A[i-1][j] >=  A[i][j]) is_hotspot = false;
@@ -128,17 +119,49 @@ int main(int argc, char* argv[]) {
             if (j < columns-1 && A[i][j+1] >= A[i][j]) is_hotspot = false;
     
             if (is_hotspot) {
+                #pragma omp atomic
                 row_hotspots[i]++;
                 total_hotspots++;
             }
-
         }
-        maximums[j] = maximum;
         
+        // check if it has no hotspots
+        if (row_hotspots[i] == 0) {
+            printf("Row %d contains no hotspots\n", i);
+            printf("Early exit\n");
+            
+            // Cleanup and exit
+            for (int k = 0; k < rows; ++k) {
+                free(A[k]);
+            }
+            free(A);
+            free(maximums);
+            free(row_hotspots);
+            return 1;
+        }
+    }
+    
+    // max sliding sum calculation
+    #pragma omp parallel for
+    for (int j = 0; j < columns; ++j) {
+        unsigned long maximum = 0;
+        unsigned long sum = 0;
+        
+        for (int i = 0; i < rows; ++i) {
+            sum += A[i][j];                   
+            if (i >= window_height) {         
+                sum -= A[i - window_height][j];
+            }
+            if (i >= window_height - 1) {
+                if (sum > maximum) maximum = sum;
+            }
+        }
+        
+        maximums[j] = maximum;
     }
 
     double end_time = omp_get_wtime();
-    printf("Time taken for hotspot analysis: %f s\n", end_time - start_time);
+    printf("Time taken for hotspot and max sliding sum analysis: %f s\n", end_time - start_time);
 
     // Print maximum sliding sums per column
     if (verbose) {
