@@ -79,16 +79,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if (verbose) {
-        printf("A:\n");
-        #pragma omp parallel for
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j) {
-                printf("%lu ", A[i][j]);
-            }
-            printf("\n");
-        }
-    }
     double hash_start_time = omp_get_wtime();
     for (int w = 0; w < work_factor; ++w)
     {
@@ -102,7 +92,6 @@ int main(int argc, char* argv[]) {
         }
     }
     double hash_end_time = omp_get_wtime();
-    printf("Time taken for hash function: %f s\n", hash_end_time - hash_start_time);
     double start_time = omp_get_wtime();
     
     unsigned long total_hotspots = 0;
@@ -114,7 +103,6 @@ int main(int argc, char* argv[]) {
     {
         #pragma omp for
         for (int i = 0; i < rows; ++i) {
-            printf("Row %d\n", i);
             int local_row_hotspots = 0;
 
             for (int j = 0; j < columns; ++j) {
@@ -146,6 +134,8 @@ int main(int argc, char* argv[]) {
     // early exit if not hotspots found in a row
     if (abort_program) {
         printf("Early exit\n");
+        double end_time = omp_get_wtime();
+        printf("Execution took: %f s\n", end_time - start);
         for (int k = 0; k < rows; ++k) free(A[k]);
         free(A);
         free(maximums);
@@ -153,6 +143,16 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    if (verbose) {
+        printf("A:\n");
+        #pragma omp parallel for
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                printf("%lu ", A[i][j]);
+            }
+            printf("\n");
+        }
+    }
     // max sliding sum calculation
     #pragma omp parallel for
     for (int j = 0; j < columns; ++j) {
