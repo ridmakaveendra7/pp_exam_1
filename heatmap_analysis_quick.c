@@ -79,7 +79,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    double hash_start_time = omp_get_wtime();
     for (int w = 0; w < work_factor; ++w)
     {
         #pragma omp parallel for collapse(2)
@@ -91,8 +90,6 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    double hash_end_time = omp_get_wtime();
-    double start_time = omp_get_wtime();
     
     unsigned long total_hotspots = 0;
     
@@ -171,9 +168,6 @@ int main(int argc, char* argv[]) {
         
         maximums[j] = maximum;
     }
-
-    double end_time = omp_get_wtime();
-    printf("Time taken for hotspot and max sliding sum analysis: %f s\n", end_time - start_time);
 
     // Print maximum sliding sums per column
     if (verbose) {

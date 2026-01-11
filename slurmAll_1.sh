@@ -11,5 +11,5 @@ for t in "${THREADS_LIST[@]}"; do
     sbatch \
       --export=OMP_NUM_THREADS=$t,BASE_ARGS="$BASE_ARGS",WORK_FACTOR="$WORK_FACTOR" \
       --job-name=heatmap_analysis_$t \
-      slurmSubmit.sh
+      slurmSubmit_1.sh
 done

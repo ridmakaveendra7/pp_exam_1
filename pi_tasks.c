@@ -84,7 +84,6 @@ int main(int argc, char *argv[]) {
         {
             process_task(seed);
         }
-        #pragma omp taskwait
     }
 
     double end_time = omp_get_wtime();

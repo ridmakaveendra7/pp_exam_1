@@ -89,7 +89,6 @@ int main(int argc, char* argv[]) {
             printf("\n");
         }
     }
-    double hash_start_time = omp_get_wtime();
     for (int w = 0; w < work_factor; ++w)
     {
         #pragma omp parallel for collapse(2)
