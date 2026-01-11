@@ -108,39 +108,51 @@ int main(int argc, char* argv[]) {
     unsigned long total_hotspots = 0;
     
     // Hotspot analysis
-    for (int i = 0; i < rows; ++i) {
-        #pragma omp parallel for reduction(+:total_hotspots)
-        for (int j = 0; j < columns; ++j) {
-            bool is_hotspot = true;
-    
-            if (i > 0 && A[i-1][j] >=  A[i][j]) is_hotspot = false;
-            if (i < rows-1 && A[i+1][j] >=  A[i][j]) is_hotspot = false;
-            if (j > 0 && A[i][j-1] >= A[i][j]) is_hotspot = false;
-            if (j < columns-1 && A[i][j+1] >= A[i][j]) is_hotspot = false;
-    
-            if (is_hotspot) {
-                #pragma omp atomic
-                row_hotspots[i]++;
-                total_hotspots++;
+    int abort_program = 0;
+
+    #pragma omp parallel shared(A, row_hotspots) reduction(+:total_hotspots)
+    {
+        #pragma omp for
+        for (int i = 0; i < rows; ++i) {
+            printf("Row %d\n", i);
+            int local_row_hotspots = 0;
+
+            for (int j = 0; j < columns; ++j) {
+                bool is_hotspot = true;
+
+                if (i > 0 && A[i-1][j] >= A[i][j]) is_hotspot = false;
+                if (i < rows-1 && A[i+1][j] >= A[i][j]) is_hotspot = false;
+                if (j > 0 && A[i][j-1] >= A[i][j]) is_hotspot = false;
+                if (j < columns-1 && A[i][j+1] >= A[i][j]) is_hotspot = false;
+
+                if (is_hotspot) {
+                    local_row_hotspots++;
+                    total_hotspots++;
+                }
             }
-        }
-        
-        // check if it has no hotspots
-        if (row_hotspots[i] == 0) {
-            printf("Row %d contains no hotspots\n", i);
-            printf("Early exit\n");
-            
-            // Cleanup and exit
-            for (int k = 0; k < rows; ++k) {
-                free(A[k]);
+
+            row_hotspots[i] = local_row_hotspots;
+
+            if (local_row_hotspots == 0) {
+                printf("Row %d contains no hotspots\n", i);
+                abort_program = 1;
+                #pragma omp cancel for
             }
-            free(A);
-            free(maximums);
-            free(row_hotspots);
-            return 1;
+
+            #pragma omp cancellation point for
         }
     }
-    
+
+    // early exit if not hotspots found in a row
+    if (abort_program) {
+        printf("Early exit\n");
+        for (int k = 0; k < rows; ++k) free(A[k]);
+        free(A);
+        free(maximums);
+        free(row_hotspots);
+        return 1;
+    }
+
     // max sliding sum calculation
     #pragma omp parallel for
     for (int j = 0; j < columns; ++j) {
