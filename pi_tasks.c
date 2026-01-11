@@ -12,7 +12,7 @@ unsigned long my_rand(unsigned long* state,
     unsigned long range = (upper > lower) ? (upper - lower) : 0UL;
     return (range > 0) ? (result % range + lower) : lower;
 }
-// integral computation of pi
+
 double compute_pi(long num_steps) {
     double step = 1.0 / (double) num_steps;
     double sum = 0.0;
@@ -32,19 +32,19 @@ int *tasks_per_thread;
 
 void process_task(unsigned long task_seed) {
     int task_id;
-    double pi;
+
     #pragma omp atomic capture
     task_id = created_tasks++;
     
     if (task_id >= num_tasks) return;
+
     unsigned long steps = my_rand(&task_seed, lower, upper + 1);
-    #pragma omp task
+
+    double pi;
+
+    #pragma omp task shared(pi)
     pi = compute_pi((long) steps);
     
-    #pragma omp atomic
-    pi_sum += pi;
-    
-    #pragma omp atomic
     tasks_per_thread[omp_get_thread_num()]++;
     
     unsigned long n_new = my_rand(&task_seed, 1, 5);
@@ -54,6 +54,11 @@ void process_task(unsigned long task_seed) {
         #pragma omp task
         process_task(child_seed);
     }
+
+    #pragma omp taskwait
+
+    #pragma omp atomic
+    pi_sum += pi;
 }
 
 int main(int argc, char *argv[]) {
@@ -83,8 +88,8 @@ int main(int argc, char *argv[]) {
     }
 
     double end_time = omp_get_wtime();
-    printf("Average pi: %.10f\n", pi_sum / created_tasks);
-
+    printf("Average pi: %.10f\n", pi_sum / num_tasks);
+    
     for (int i = 0; i < num_threads; i++) {
         printf("Thread %d computed %d tasks\n", i, tasks_per_thread[i]);
     }
