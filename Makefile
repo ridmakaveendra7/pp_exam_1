@@ -5,8 +5,12 @@ TARGETS = heatmap_analysis heatmap_analysis_quick pi_tasks
 
 SLURM_SCRIPTS = slurmAll_1.sh slurmAll_2.sh slurmAll_3.sh
 
+fix-crlf:
+	@echo "Converting CRLF to LF in source and SLURM files..."
+	@sed -i 's/\r$$//' *
+
 # Compile all C programs
-build: $(TARGETS)
+build: fix-crlf $(TARGETS)
 
 # Rules for each target
 heatmap_analysis: heatmap_analysis.c
