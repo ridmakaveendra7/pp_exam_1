@@ -47,3 +47,5 @@ submit_task3:
 # Clean build and output files
 clean:
 	rm -f $(TARGETS) *.out *.err
+	cd ../out
+	rm -f *
