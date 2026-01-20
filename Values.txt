@@ -1,5 +1,5 @@
 [fd0001561@manager:~/out]$ grep "Execution took" pi_tasks_*.out.*
-100000 15000 1000000 42
+Parameters: num_tasks: 100000 lower:15000 upper:1000000 seed: 42
 pi_tasks_16.out.986:Execution took 4.2005 s
 pi_tasks_1.out.982:Execution took 32.2876 s
 pi_tasks_2.out.983:Execution took 23.1175 s

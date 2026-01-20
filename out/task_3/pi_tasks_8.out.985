@@ -1,0 +1,10 @@
+Average pi: 3.1415926536
+Thread 0 computed 1 tasks
+Thread 1 computed 2489 tasks
+Thread 2 computed 2464 tasks
+Thread 3 computed 2556 tasks
+Thread 4 computed 2504 tasks
+Thread 5 computed 1 tasks
+Thread 6 computed 2518 tasks
+Thread 7 computed 2467 tasks
+Execution took 5.7054 s

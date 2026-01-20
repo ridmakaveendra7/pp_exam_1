@@ -1,0 +1,4 @@
+Starting heatmap_analysis
+Parameters: columns: 10240, rows: 7860, seed: 1337, lower: 0, upper: 100, window height: 20, verbose: 0, num threads: 4, work factor: 70
+Total hotspots found: 15332903
+Execution took: 12.194287 s

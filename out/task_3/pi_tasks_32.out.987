@@ -1,0 +1,34 @@
+Average pi: 3.1415926536
+Thread 0 computed 1 tasks
+Thread 1 computed 517 tasks
+Thread 2 computed 618 tasks
+Thread 3 computed 1 tasks
+Thread 4 computed 558 tasks
+Thread 5 computed 458 tasks
+Thread 6 computed 628 tasks
+Thread 7 computed 1 tasks
+Thread 8 computed 584 tasks
+Thread 9 computed 648 tasks
+Thread 10 computed 641 tasks
+Thread 11 computed 549 tasks
+Thread 12 computed 581 tasks
+Thread 13 computed 1 tasks
+Thread 14 computed 473 tasks
+Thread 15 computed 635 tasks
+Thread 16 computed 631 tasks
+Thread 17 computed 1 tasks
+Thread 18 computed 606 tasks
+Thread 19 computed 613 tasks
+Thread 20 computed 621 tasks
+Thread 21 computed 629 tasks
+Thread 22 computed 557 tasks
+Thread 23 computed 1 tasks
+Thread 24 computed 1 tasks
+Thread 25 computed 516 tasks
+Thread 26 computed 777 tasks
+Thread 27 computed 632 tasks
+Thread 28 computed 673 tasks
+Thread 29 computed 556 tasks
+Thread 30 computed 675 tasks
+Thread 31 computed 617 tasks
+Execution took 2.2245 s

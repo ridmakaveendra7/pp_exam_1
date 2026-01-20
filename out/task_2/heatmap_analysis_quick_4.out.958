@@ -1,0 +1,5 @@
+Starting heatmap_analysis
+Parameters: columns: 30, rows: 200000, seed: 42, lower: 0, upper: 10000000, window height: 2, verbose: 0, num threads: 4, work factor: 1000
+Row 105624 contains no hotspots
+Early exit
+Execution took: 11.668483 s
