@@ -12,22 +12,24 @@ for t in threads:
 
 plot_name = input("Enter plot name/title: ")
 
+T1 = times[0]                      
+speedup = [T1 / tp for tp in times]
+
 plt.figure()
-plt.plot(threads, times, marker="o")
+plt.plot(threads, speedup, marker="o")
 
 plt.xlabel("Thread Count")
-plt.ylabel("Execution Time")
+plt.ylabel("Speedup")
 plt.title(plot_name)
 
 plt.xticks(range(0, 68, 8))
 
-for x, y in zip(threads, times):
+for x, y in zip(threads, speedup):
     plt.text(x, y, f"({x}, {y:.4f})")
 
 plt.grid(True)
 
-filename = plot_name.replace(" ", "_") + ".png"
+filename = plot_name + ".png"
 plt.savefig(filename)
 
 print(f"Plot saved as {filename}")
-
