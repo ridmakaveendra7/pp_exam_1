@@ -1,0 +1,27 @@
+[fd0001561@manager:~/out]$ grep "Execution took" pi_tasks_*.out.*
+pi_tasks_1.out.875:Execution took 47.1329 s
+pi_tasks_2.out.878:Execution took 23.4108 s
+pi_tasks_4.out.881:Execution took 11.6027 s
+pi_tasks_8.out.884:Execution took 7.7588 s
+pi_tasks_16.out.886:Execution took 4.1324 s
+pi_tasks_32.out.889:Execution took 2.3394 s
+pi_tasks_64.out.893:Execution took 1.6828 s
+
+[fd0001561@manager:~/out]$ grep "Execution took:" heatmap_analysis_*.out.*
+heatmap_analysis_1.out.873:Execution took: 43.334296 s
+heatmap_analysis_2.out.876:Execution took: 23.415799 s
+heatmap_analysis_4.out.879:Execution took: 13.713762 s
+heatmap_analysis_8.out.882:Execution took: 6.142251 s
+heatmap_analysis_16.out.885:Execution took: 3.612415 s
+heatmap_analysis_32.out.888:Execution took: 1.886755 s
+heatmap_analysis_64.out.891:Execution took: 1.194085 s
+
+
+heatmap_analysis_quick_1.out.874:Execution took: 0.000059 s
+heatmap_analysis_quick_2.out.877:Execution took: 0.000333 s
+heatmap_analysis_quick_4.out.880:Execution took: 0.001086 s
+heatmap_analysis_quick_8.out.883:Execution took: 0.000990 s
+heatmap_analysis_quick_16.out.887:Execution took: 0.002387 s
+heatmap_analysis_quick_32.out.890:Execution took: 0.003663 s
+heatmap_analysis_quick_64.out.892:Execution took: 0.020565 s
+
