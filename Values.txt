@@ -17,11 +17,12 @@ heatmap_analysis_32.out.888:Execution took: 1.886755 s
 heatmap_analysis_64.out.891:Execution took: 1.194085 s
 
 
-heatmap_analysis_quick_1.out.874:Execution took: 0.000059 s
-heatmap_analysis_quick_2.out.877:Execution took: 0.000333 s
-heatmap_analysis_quick_4.out.880:Execution took: 0.001086 s
-heatmap_analysis_quick_8.out.883:Execution took: 0.000990 s
-heatmap_analysis_quick_16.out.887:Execution took: 0.002387 s
-heatmap_analysis_quick_32.out.890:Execution took: 0.003663 s
-heatmap_analysis_quick_64.out.892:Execution took: 0.020565 s
+[fd0001561@manager:~/out]$ grep "Execution took:" heatmap_analysis_quick_*.out.*
+heatmap_analysis_quick_16.out.960:Execution took: 2.895528 s
+heatmap_analysis_quick_1.out.956:Execution took: 43.795114 s
+heatmap_analysis_quick_2.out.957:Execution took: 22.444303 s
+heatmap_analysis_quick_32.out.961:Execution took: 1.468050 s
+heatmap_analysis_quick_4.out.958:Execution took: 11.668483 s
+heatmap_analysis_quick_64.out.962:Execution took: 0.786442 s
+heatmap_analysis_quick_8.out.959:Execution took: 5.772916 s
 

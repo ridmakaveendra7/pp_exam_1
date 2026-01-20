@@ -3,9 +3,9 @@
 THREADS_LIST=(1 2 4 8 16 32 64)
 
 # WITHOUT thread count
-BASE_ARGS="3 4 42 0 10 2 0"
+BASE_ARGS="30 200000 42 0 10000000 2 0"
 
-WORK_FACTOR=0
+WORK_FACTOR=1000
 
 for t in "${THREADS_LIST[@]}"; do
     sbatch \
