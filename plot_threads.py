@@ -24,9 +24,6 @@ plt.title(plot_name)
 
 plt.xticks(range(0, 68, 8))
 
-for x, y in zip(threads, speedup):
-    plt.text(x, y, f"({x}, {y:.4f})")
-
 plt.grid(True)
 
 filename = plot_name + ".png"
