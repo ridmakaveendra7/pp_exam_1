@@ -14,9 +14,20 @@ plot_name = input("Enter plot name/title: ")
 
 plt.figure()
 plt.plot(threads, times, marker="o")
+
 plt.xlabel("Thread Count")
 plt.ylabel("Execution Time")
 plt.title(plot_name)
+
+plt.xticks(range(0, 68, 8))
+
+for x, y in zip(threads, times):
+    plt.text(x, y, f"({x}, {y:.4f})")
+
 plt.grid(True)
 
-plt.show()
+filename = plot_name.replace(" ", "_") + ".png"
+plt.savefig(filename)
+
+print(f"Plot saved as {filename}")
+
