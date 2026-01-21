@@ -62,8 +62,8 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < rows; ++i)
         A[i] = malloc(columns * sizeof(unsigned long));
 
-    unsigned long * maximums = malloc(columns * sizeof(unsigned long *));
-    unsigned long * row_hotspots = malloc(rows * sizeof(unsigned long *));
+    unsigned long * maximums = malloc(columns * sizeof(unsigned long));
+    unsigned long * row_hotspots = malloc(rows * sizeof(unsigned long));
     // Initialize arrays to zero
     #pragma omp parallel for
     for (int i = 0; i < columns; ++i) maximums[i] = 0;
@@ -79,16 +79,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if (verbose) {
-        printf("A:\n");
-        #pragma omp parallel for
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j) {
-                printf("%lu ", A[i][j]);
-            }
-            printf("\n");
-        }
-    }
     for (int w = 0; w < work_factor; ++w)
     {
         #pragma omp parallel for collapse(2)
@@ -100,13 +90,53 @@ int main(int argc, char* argv[]) {
             }
         }
     }
+    
     unsigned long total_hotspots = 0;
-    #pragma omp parallel for reduction(+:total_hotspots)
+    
+    // Hotspot analysis
+
+    #pragma omp parallel shared(A, row_hotspots) reduction(+:total_hotspots)
+    {
+        #pragma omp for
+        for (int i = 0; i < rows; ++i) {
+            int local_row_hotspots = 0;
+
+            for (int j = 0; j < columns; ++j) {
+                bool is_hotspot = true;
+
+                if (i > 0 && A[i-1][j] >= A[i][j]) is_hotspot = false;
+                if (i < rows-1 && A[i+1][j] >= A[i][j]) is_hotspot = false;
+                if (j > 0 && A[i][j-1] >= A[i][j]) is_hotspot = false;
+                if (j < columns-1 && A[i][j+1] >= A[i][j]) is_hotspot = false;
+
+                if (is_hotspot) {
+                    local_row_hotspots++;
+                    total_hotspots++;
+                }
+            }
+
+            row_hotspots[i] = local_row_hotspots;
+
+        }
+    }
+
+    if (verbose) {
+        printf("A:\n");
+        #pragma omp parallel for
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                printf("%lu ", A[i][j]);
+            }
+            printf("\n");
+        }
+    }
+    // max sliding sum calculation
+    #pragma omp parallel for
     for (int j = 0; j < columns; ++j) {
         unsigned long maximum = 0;
         unsigned long sum = 0;
+        
         for (int i = 0; i < rows; ++i) {
-            // Find maximum sliding sum
             sum += A[i][j];                   
             if (i >= window_height) {         
                 sum -= A[i - window_height][j];
@@ -114,22 +144,9 @@ int main(int argc, char* argv[]) {
             if (i >= window_height - 1) {
                 if (sum > maximum) maximum = sum;
             }
-            // Find hotspots
-            bool is_hotspot = true;
-    
-            if (i > 0 && A[i-1][j] >=  A[i][j]) is_hotspot = false;
-            if (i < rows-1 && A[i+1][j] >=  A[i][j]) is_hotspot = false;
-            if (j > 0 && A[i][j-1] >= A[i][j]) is_hotspot = false;
-            if (j < columns-1 && A[i][j+1] >= A[i][j]) is_hotspot = false;
-    
-            if (is_hotspot) {
-                row_hotspots[i]++;
-                total_hotspots++;
-            }
-
         }
-        maximums[j] = maximum;
         
+        maximums[j] = maximum;
     }
 
     // Print maximum sliding sums per column

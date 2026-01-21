@@ -1,12 +1,13 @@
 [fd0001561@manager:~/out]$ grep "Execution took:" heatmap_analysis_*.out.*
 Parameters: columns: 10240, rows: 7860, seed: 1337, lower: 0, upper: 100, window height: 20, verbose: 0, num threads: 1, work factor: 70
-heatmap_analysis_16.out.978:Execution took: 3.168058 s
-heatmap_analysis_1.out.974:Execution took: 43.222971 s
-heatmap_analysis_2.out.975:Execution took: 22.947210 s
-heatmap_analysis_32.out.979:Execution took: 1.917689 s
-heatmap_analysis_4.out.976:Execution took: 12.194287 s
-heatmap_analysis_64.out.980:Execution took: 0.987017 s
-heatmap_analysis_8.out.977:Execution took: 7.087285 s
+heatmap_analysis_16.out.1798:Execution took: 3.709403 s
+heatmap_analysis_1.out.1794:Execution took: 44.209753 s
+heatmap_analysis_2.out.1795:Execution took: 23.943802 s
+heatmap_analysis_32.out.1799:Execution took: 2.257462 s
+heatmap_analysis_4.out.1796:Execution took: 12.504049 s
+heatmap_analysis_64.out.1800:Execution took: 0.995586 s
+heatmap_analysis_8.out.1797:Execution took: 7.071657 s
+
 
 
 [fd0001561@manager:~/out]$ grep "Execution took:" heatmap_analysis_quick_*.out.*
